@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Cipher</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Потоковый шифр</h1>
+        <textarea id="inputMessage" placeholder="Вставьте сообщения для шифрования"></textarea>
+        <button onclick="encryptMessage()">Зашифровать</button>
+        <textarea id="encryptedMessage" readonly placeholder="Зашифрованное сообщение появится здесь"></textarea>
+        <button onclick="decryptMessage()">Расшифровать</button>
+        <textarea id="decryptedMessage" readonly placeholder="Расшифрованное сообщение появится здесь"></textarea>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
