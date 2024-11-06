@@ -56,9 +56,11 @@ function byteArrayToString(bytes) {
 function encryptMessage() {
     const message = document.getElementById("inputMessage").value;
     key = getRandomPermutation(256);  // Создание ключа
+    console.log(key);
     let gen = initializeGenerator(key);
     const messageBytes = stringToByteArray(message);
     gamma = makeGamma(gen, messageBytes.length);  // Создание гаммы
+    console.log(gamma);
     const encryptedBytes = xorMessage(messageBytes, gamma);
     document.getElementById("encryptedMessage").value = byteArrayToString(encryptedBytes);
 }

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Шифрование</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        .container { margin-bottom: 20px; }
+        button { padding: 10px; cursor: pointer; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 8px; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<h2>RSA Шифрование</h2>
+
+<div class="container">
+    <button onclick="generateKeys()">Генерировать ключи</button>
+    <p>Публичный ключ (PK): <span id="publicKey"></span></p>
+    <p>Секретный ключ (SK): <span id="secretKey"></span></p>
+</div>
+
+<div class="container">
+    <label for="message">Сообщение (число):</label>
+    <input type="number" id="message" placeholder="Введите сообщение для шифрования">
+    <button onclick="encryptMessage()">Зашифровать сообщение</button>
+    <p>Зашифрованное сообщение: <span id="encryptedMessage"></span></p>
+</div>
+
+<div class="container">
+    <label for="cipherText">Зашифрованное сообщение:</label>
+    <input type="number" id="cipherText" placeholder="Введите зашифрованное сообщение для расшифрования">
+    <button onclick="decryptMessage()">Расшифровать сообщение</button>
+    <p>Расшифрованное сообщение: <span id="decryptedMessage"></span></p>
+</div>
+
+<script>
+// Глобальные переменные для ключей
+let publicKey = null;
+let secretKey = null;
+
+// Функция для вычисления НОД
+function gcd(a, b) {
+    return b === 0n ? a : gcd(b, a % b);
+}
+
+// Функция для вычисления функции Эйлера
+function phi(n) {
+    let result = 1n;
+    for (let i = 2n; i < n; i++) {
+        if (gcd(i, n) === 1n) result++;
+    }
+    return result;
+}
+
+// Функция для вычисления обратного по модулю числа
+function modInverse(a, n) {
+    let a_inv = 1n;
+    while ((a_inv * a) % n !== 1n) {
+        a_inv++;
+        if (a_inv > n) return null;
+    }
+    return a_inv;
+}
+
+// Генерация ключей
+function generateKeys() {
+    const p = 13n, q = 17n; // Пример простых чисел
+    const n = p * q;
+    const ph = phi(n);
+
+    // Выбор e
+    let e;
+    do {
+        e = BigInt(Math.floor(Math.random() * (Number(ph) - 3)) + 3);
+    } while (gcd(e, ph) !== 1n);
+
+    const d = modInverse(e, ph);
+
+    publicKey = { e: e, n: n };
+    secretKey = { d: d, n: n };
+
+    document.getElementById("publicKey").textContent = `(${publicKey.e}, ${publicKey.n})`;
+    document.getElementById("secretKey").textContent = `(${secretKey.d}, ${secretKey.n})`;
+}
+
+// Шифрование сообщения
+function encryptMessage() {
+    const m = BigInt(document.getElementById("message").value);
+    if (!publicKey) {
+        alert("Сначала сгенерируйте ключи.");
+        return;
+    }
+    const c = m ** publicKey.e % publicKey.n;
+    document.getElementById("encryptedMessage").textContent = c;
+    document.getElementById("cipherText").value = c; // Автоматически вставляем зашифрованное сообщение
+}
+
+// Расшифрование сообщения
+function decryptMessage() {
+    const c = BigInt(document.getElementById("cipherText").value);
+    if (!secretKey) {
+        alert("Сначала сгенерируйте ключи.");
+        return;
+    }
+    const m = c ** secretKey.d % secretKey.n;
+    document.getElementById("decryptedMessage").textContent = m;
+}
+</script>
+
+</body>
+</html>
